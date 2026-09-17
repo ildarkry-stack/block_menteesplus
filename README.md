@@ -41,5 +41,5 @@ The plugin does not create a new mentor/student mapping table. It detects mentee
 The plugin stores no personal data. It reads existing user, role assignment, and cohort membership records.
 
 
-## 0.1.3
+## 0.1.4
 Responsive results grid, wrapped actions, stable avatar fallback and mobile cards.

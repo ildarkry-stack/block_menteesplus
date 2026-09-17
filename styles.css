@@ -1,4 +1,4 @@
-/* Compact block. */
+/* Mentees Plus: compact block. */
 .block_menteesplus .menteesplus-item + .menteesplus-item {
     border-top: 1px solid var(--bs-border-color, #dee2e6);
 }
@@ -14,16 +14,59 @@
     vertical-align: middle;
 }
 
-/* Full-list filters. */
-.menteesplus-filter-card {
-    overflow: hidden;
+.block_menteesplus .menteesplus-block-avatar-image,
+.block_menteesplus .menteesplus-block-avatar-fallback {
+    width: 35px;
+    height: 35px;
+    flex: 0 0 35px;
+    border-radius: 50%;
 }
 
-.menteesplus-filters {
+.block_menteesplus .menteesplus-block-avatar-image {
+    object-fit: cover;
+}
+
+.block_menteesplus .menteesplus-block-avatar-fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bs-secondary-bg, #e9ecef);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    color: var(--bs-secondary-color, #6c757d);
+    font-size: .72rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* Full page. */
+.menteesplus-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.menteesplus-page,
+.menteesplus-page * {
+    box-sizing: border-box;
+}
+
+/* Filter toolbar. */
+.menteesplus-toolbar {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1.75rem;
+    padding: 1.25rem;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: .75rem;
+    background: var(--bs-body-bg, #fff);
+}
+
+.menteesplus-filter-grid {
     display: grid;
-    grid-template-columns: minmax(250px, 2fr) minmax(230px, 1.6fr) minmax(160px, 1fr) minmax(125px, .7fr);
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1.1fr) minmax(0, .75fr);
     gap: 1rem;
-    align-items: end;
+    width: 100%;
+    min-width: 0;
 }
 
 .menteesplus-filter {
@@ -32,90 +75,112 @@
 
 .menteesplus-filter .form-label {
     display: block;
-    margin-bottom: .5rem;
+    margin-bottom: .4rem;
+    font-weight: 500;
 }
 
 .menteesplus-filter .form-control,
 .menteesplus-filter .form-select {
     width: 100%;
+    max-width: 100%;
     min-width: 0;
 }
 
-.menteesplus-filter-actions {
-    grid-column: 1 / -1;
+.menteesplus-toolbar-footer {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+.menteesplus-perpage {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    min-width: 0;
+}
+
+.menteesplus-perpage-label {
+    margin: 0;
+    color: var(--bs-secondary-color, #6c757d);
+    white-space: nowrap;
+}
+
+.menteesplus-perpage .form-select {
+    width: 88px;
+    min-width: 88px;
+}
+
+.menteesplus-filter-actions {
+    display: flex;
+    align-items: center;
     justify-content: flex-end;
     gap: .625rem;
     min-width: 0;
 }
 
 .menteesplus-filter-actions .btn {
+    margin: 0;
     white-space: nowrap;
 }
 
-/* Full-list results. Use CSS grid instead of a fixed-width table. */
-.menteesplus-results {
-    width: 100%;
-    border-top: 1px solid var(--bs-border-color, #dee2e6);
-    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+/* Results summary. */
+.menteesplus-result-count {
+    margin-bottom: .75rem;
+    color: var(--bs-secondary-color, #6c757d);
+    font-size: .95rem;
 }
 
-.menteesplus-results-header,
-.menteesplus-result-row {
+/* Student cards. */
+.menteesplus-people {
     display: grid;
-    grid-template-columns: minmax(260px, 2fr) minmax(170px, 1.35fr) minmax(135px, .8fr) minmax(150px, .9fr);
-    column-gap: 1rem;
-    align-items: center;
-}
-
-.menteesplus-results-header {
-    min-height: 3rem;
-    font-weight: 600;
-    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
-}
-
-.menteesplus-result-row {
-    min-height: 4.5rem;
-    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
-}
-
-.menteesplus-result-row:last-child {
-    border-bottom: 0;
-}
-
-.menteesplus-result-row:hover {
-    background: var(--bs-tertiary-bg, rgba(0, 0, 0, .025));
-}
-
-.menteesplus-cell {
+    gap: .75rem;
+    width: 100%;
     min-width: 0;
-    padding: .75rem .625rem;
+}
+
+.menteesplus-person-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, .9fr) auto;
+    gap: 1rem;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: .75rem;
+    background: var(--bs-body-bg, #fff);
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.menteesplus-person-card:hover {
+    border-color: var(--bs-secondary-border-subtle, #c6cbd1);
+    background: var(--bs-tertiary-bg, #f8f9fa);
+    box-shadow: 0 .125rem .35rem rgba(0, 0, 0, .045);
+}
+
+.menteesplus-person-main,
+.menteesplus-person-groups,
+.menteesplus-person-actions {
+    min-width: 0;
 }
 
 .menteesplus-student {
     display: flex;
     align-items: center;
-    gap: .75rem;
+    gap: .8rem;
     min-width: 0;
-}
-
-.menteesplus-student-main {
-    min-width: 0;
-    flex: 1 1 auto;
-}
-
-.menteesplus-student-name {
-    display: inline-block;
-    max-width: 100%;
-    font-weight: 600;
-    overflow-wrap: anywhere;
 }
 
 .menteesplus-avatar-image,
 .menteesplus-avatar-fallback {
-    width: 44px;
-    height: 44px;
-    flex: 0 0 44px;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    border-radius: 50%;
 }
 
 .menteesplus-avatar-image {
@@ -126,24 +191,53 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
     background: var(--bs-secondary-bg, #e9ecef);
     border: 1px solid var(--bs-border-color, #dee2e6);
     color: var(--bs-secondary-color, #6c757d);
-    font-size: .8rem;
+    font-size: .82rem;
     font-weight: 600;
     line-height: 1;
     letter-spacing: .02em;
 }
 
+.menteesplus-student-main {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.menteesplus-student-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .45rem .6rem;
+    min-width: 0;
+}
+
+.menteesplus-student-name {
+    min-width: 0;
+    max-width: 100%;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+.menteesplus-status {
+    flex: 0 0 auto;
+}
+
 .menteesplus-identity {
-    margin-top: .2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .15rem .8rem;
+    margin-top: .3rem;
     color: var(--bs-secondary-color, #6c757d);
     font-size: .82rem;
-    line-height: 1.35;
+    line-height: 1.4;
 }
 
 .menteesplus-identity-item {
+    min-width: 0;
     max-width: 100%;
     overflow-wrap: anywhere;
     word-break: break-word;
@@ -151,6 +245,15 @@
 
 .menteesplus-identity-label {
     font-weight: 500;
+}
+
+.menteesplus-section-label {
+    margin-bottom: .45rem;
+    color: var(--bs-secondary-color, #6c757d);
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .03em;
+    text-transform: uppercase;
 }
 
 .menteesplus-cohort-list {
@@ -167,11 +270,20 @@
     overflow-wrap: anywhere;
 }
 
+.menteesplus-no-cohort {
+    font-size: .9rem;
+}
+
+.menteesplus-person-actions {
+    justify-self: end;
+}
+
 .menteesplus-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: .4rem;
-    align-items: center;
+    justify-content: flex-end;
+    gap: .45rem;
+    min-width: 0;
 }
 
 .menteesplus-actions .btn {
@@ -179,144 +291,94 @@
     white-space: nowrap;
 }
 
-.menteesplus-mobile-label {
-    display: none;
+.menteesplus-pagination {
+    margin-top: 1.25rem;
 }
 
+/* The content area in Moodle can be much narrower than the browser viewport,
+   so keep desktop rules flexible and only use viewport breakpoints for the
+   final stacking behaviour. */
 @media (max-width: 991.98px) {
-    .menteesplus-filters {
+    .menteesplus-filter-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .menteesplus-filter-search,
-    .menteesplus-filter-actions {
+    .menteesplus-filter-search {
         grid-column: 1 / -1;
     }
 
-    .menteesplus-results-header,
-    .menteesplus-result-row {
-        grid-template-columns: minmax(230px, 1.8fr) minmax(150px, 1.2fr) minmax(120px, .75fr) minmax(135px, .85fr);
-        column-gap: .5rem;
+    .menteesplus-person-card {
+        grid-template-columns: minmax(0, 1fr) minmax(0, .7fr);
     }
 
-    .menteesplus-cell {
-        padding-left: .5rem;
-        padding-right: .5rem;
-    }
-}
-
-@media (max-width: 767.98px) {
-    .menteesplus-results {
-        border: 0;
-    }
-
-    .menteesplus-results-header {
-        display: none;
-    }
-
-    .menteesplus-result-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0;
-        margin-bottom: 1rem;
-        border: 1px solid var(--bs-border-color, #dee2e6);
-        border-radius: .75rem;
-        background: var(--bs-body-bg, #fff);
-        overflow: hidden;
-    }
-
-    .menteesplus-result-row:last-child {
-        border-bottom: 1px solid var(--bs-border-color, #dee2e6);
-    }
-
-    .menteesplus-cell {
-        padding: .8rem 1rem;
-    }
-
-    .menteesplus-cell-student {
+    .menteesplus-person-actions {
         grid-column: 1 / -1;
-        border-bottom: 1px solid var(--bs-border-color, #dee2e6);
-    }
-
-    .menteesplus-cell-actions {
-        grid-column: 1 / -1;
-        border-top: 1px solid var(--bs-border-color, #dee2e6);
-    }
-
-    .menteesplus-mobile-label {
-        display: block;
-        margin-bottom: .4rem;
-        color: var(--bs-secondary-color, #6c757d);
-        font-size: .72rem;
-        font-weight: 600;
-        letter-spacing: .02em;
-        text-transform: uppercase;
+        justify-self: start;
     }
 
     .menteesplus-actions {
-        align-items: stretch;
+        justify-content: flex-start;
     }
 }
 
 @media (max-width: 575.98px) {
-    .menteesplus-filters {
+    .menteesplus-toolbar {
+        padding: 1rem;
+    }
+
+    .menteesplus-filter-grid {
         grid-template-columns: minmax(0, 1fr);
     }
 
-    .menteesplus-filter-search,
-    .menteesplus-filter-actions {
+    .menteesplus-filter-search {
         grid-column: auto;
+    }
+
+    .menteesplus-toolbar-footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .menteesplus-perpage {
+        justify-content: space-between;
     }
 
     .menteesplus-filter-actions {
         justify-content: stretch;
-        flex-wrap: wrap;
     }
 
     .menteesplus-filter-actions .btn {
-        flex: 1 1 140px;
+        flex: 1 1 0;
     }
 
-    .menteesplus-result-row {
+    .menteesplus-person-card {
         grid-template-columns: minmax(0, 1fr);
+        gap: .8rem;
+        padding: .9rem;
     }
 
-    .menteesplus-cell-cohorts,
-    .menteesplus-cell-status,
-    .menteesplus-cell-actions {
-        grid-column: 1;
+    .menteesplus-person-actions {
+        grid-column: auto;
+        justify-self: stretch;
+        padding-top: .2rem;
     }
 
-    .menteesplus-cell-status {
-        border-top: 1px solid var(--bs-border-color, #dee2e6);
+    .menteesplus-actions {
+        justify-content: stretch;
     }
 
     .menteesplus-actions .btn {
-        flex: 1 1 130px;
+        flex: 1 1 120px;
     }
-}
 
-/* Stable avatar fallback in the compact block. */
-.block_menteesplus .menteesplus-block-avatar-image,
-.block_menteesplus .menteesplus-block-avatar-fallback {
-    width: 35px;
-    height: 35px;
-    flex: 0 0 35px;
-}
+    .menteesplus-student {
+        align-items: flex-start;
+    }
 
-.block_menteesplus .menteesplus-block-avatar-image {
-    object-fit: cover;
-}
-
-.block_menteesplus .menteesplus-block-avatar-fallback {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: var(--bs-secondary-bg, #e9ecef);
-    border: 1px solid var(--bs-border-color, #dee2e6);
-    color: var(--bs-secondary-color, #6c757d);
-    font-size: .72rem;
-    font-weight: 600;
-    line-height: 1;
+    .menteesplus-avatar-image,
+    .menteesplus-avatar-fallback {
+        width: 44px;
+        height: 44px;
+        flex-basis: 44px;
+    }
 }

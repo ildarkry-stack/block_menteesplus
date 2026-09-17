@@ -72,14 +72,16 @@ $total = $result['total'];
 $cohortsbyuser = $repository->get_cohorts_for_users(array_keys($users));
 
 echo $OUTPUT->header();
+echo html_writer::start_div('menteesplus-page');
 
-echo html_writer::start_div('card mb-4 menteesplus-filter-card');
-echo html_writer::start_div('card-body');
+// Filters.
 echo html_writer::start_tag('form', [
     'method' => 'get',
     'action' => (new moodle_url('/blocks/menteesplus/index.php'))->out(false),
-    'class' => 'menteesplus-filters',
+    'class' => 'menteesplus-toolbar',
 ]);
+
+echo html_writer::start_div('menteesplus-filter-grid');
 
 echo html_writer::start_div('menteesplus-filter menteesplus-filter-search');
 echo html_writer::label(get_string('search', 'block_menteesplus'), 'id_q', true, ['class' => 'form-label']);
@@ -105,7 +107,10 @@ $cohortoptions = [
 foreach ($cohorts as $cohort) {
     $cohortoptions[$cohort->id] = format_string($cohort->name);
 }
-echo html_writer::select($cohortoptions, 'cohortid', $cohortid, false, ['id' => 'id_cohortid', 'class' => 'form-select']);
+echo html_writer::select($cohortoptions, 'cohortid', $cohortid, false, [
+    'id' => 'id_cohortid',
+    'class' => 'form-select',
+]);
 echo html_writer::end_div();
 
 echo html_writer::start_div('menteesplus-filter menteesplus-filter-status');
@@ -115,11 +120,20 @@ $statusoptions = [
     'active' => get_string('statusactive', 'block_menteesplus'),
     'suspended' => get_string('statussuspended', 'block_menteesplus'),
 ];
-echo html_writer::select($statusoptions, 'status', $status, false, ['id' => 'id_status', 'class' => 'form-select']);
+echo html_writer::select($statusoptions, 'status', $status, false, [
+    'id' => 'id_status',
+    'class' => 'form-select',
+]);
 echo html_writer::end_div();
 
-echo html_writer::start_div('menteesplus-filter menteesplus-filter-perpage');
-echo html_writer::label(get_string('perpage', 'block_menteesplus'), 'id_perpage', true, ['class' => 'form-label']);
+echo html_writer::end_div();
+
+echo html_writer::start_div('menteesplus-toolbar-footer');
+
+echo html_writer::start_div('menteesplus-perpage');
+echo html_writer::label(get_string('perpage', 'block_menteesplus'), 'id_perpage', true, [
+    'class' => 'menteesplus-perpage-label',
+]);
 echo html_writer::select([25 => '25', 50 => '50', 100 => '100'], 'perpage', $perpage, false, [
     'id' => 'id_perpage',
     'class' => 'form-select',
@@ -137,34 +151,19 @@ echo html_writer::link($reseturl, get_string('resetfilters', 'block_menteesplus'
 ]);
 echo html_writer::end_div();
 
+echo html_writer::end_div();
 echo html_writer::end_tag('form');
-echo html_writer::end_div();
-echo html_writer::end_div();
 
+// Summary.
 echo html_writer::div(
     get_string('resultcount', 'block_menteesplus', $total),
-    'mb-3 text-muted menteesplus-result-count'
+    'menteesplus-result-count'
 );
 
 if (!$users) {
     echo $OUTPUT->notification(get_string('nomatches', 'block_menteesplus'), 'info', false);
 } else {
-    echo html_writer::start_div('menteesplus-results', ['role' => 'table']);
-
-    echo html_writer::start_div('menteesplus-results-header', ['role' => 'row']);
-    echo html_writer::div(get_string('student', 'block_menteesplus'), 'menteesplus-cell menteesplus-cell-student', [
-        'role' => 'columnheader',
-    ]);
-    echo html_writer::div(get_string('cohorts', 'block_menteesplus'), 'menteesplus-cell menteesplus-cell-cohorts', [
-        'role' => 'columnheader',
-    ]);
-    echo html_writer::div(get_string('accountstatus', 'block_menteesplus'), 'menteesplus-cell menteesplus-cell-status', [
-        'role' => 'columnheader',
-    ]);
-    echo html_writer::div(get_string('actions', 'block_menteesplus'), 'menteesplus-cell menteesplus-cell-actions', [
-        'role' => 'columnheader',
-    ]);
-    echo html_writer::end_div();
+    echo html_writer::start_div('menteesplus-people', ['role' => 'list']);
 
     foreach ($users as $user) {
         $profileurl = \core\user::get_profile_url($user);
@@ -173,8 +172,8 @@ if (!$users) {
 
         if ((int) $user->picture > 0) {
             $avatar = $OUTPUT->user_picture($user, [
-                'size' => 44,
-                'class' => 'rounded-circle menteesplus-avatar-image',
+                'size' => 48,
+                'class' => 'menteesplus-avatar-image',
                 'alttext' => false,
             ]);
         } else {
@@ -192,21 +191,36 @@ if (!$users) {
             $name = html_writer::span($displayname, 'menteesplus-student-name');
         }
 
+        if ($user->suspended) {
+            $statushtml = html_writer::span(
+                get_string('statussuspended', 'block_menteesplus'),
+                'badge text-bg-secondary menteesplus-status'
+            );
+        } else {
+            $statushtml = html_writer::span(
+                get_string('statusactive', 'block_menteesplus'),
+                'badge text-bg-success menteesplus-status'
+            );
+        }
+
         $identity = '';
         if ($canviewidentity) {
-            $email = html_writer::div(
-                html_writer::span(get_string('email') . ': ', 'menteesplus-identity-label') . s($user->email),
+            $email = html_writer::span(
+                html_writer::span(get_string('emailshort', 'block_menteesplus') . ': ', 'menteesplus-identity-label') .
+                    s($user->email),
                 'menteesplus-identity-item'
             );
-            $username = html_writer::div(
-                html_writer::span(get_string('username') . ': ', 'menteesplus-identity-label') . s($user->username),
+            $username = html_writer::span(
+                html_writer::span(get_string('usernameshort', 'block_menteesplus') . ': ', 'menteesplus-identity-label') .
+                    s($user->username),
                 'menteesplus-identity-item'
             );
             $identity = html_writer::div($email . $username, 'menteesplus-identity');
         }
 
+        $studentheader = html_writer::div($name . $statushtml, 'menteesplus-student-heading');
         $studenthtml = html_writer::div(
-            $avatar . html_writer::div($name . $identity, 'menteesplus-student-main'),
+            $avatar . html_writer::div($studentheader . $identity, 'menteesplus-student-main'),
             'menteesplus-student'
         );
 
@@ -216,57 +230,44 @@ if (!$users) {
             $badges = [];
             foreach ($usercohorts as $cohort) {
                 $title = $cohort->idnumber ? $cohort->name . ' (' . $cohort->idnumber . ')' : $cohort->name;
-                $badges[] = html_writer::span(s($title), 'badge rounded-pill text-bg-light border menteesplus-cohort-badge');
+                $badges[] = html_writer::span(
+                    s($title),
+                    'badge rounded-pill text-bg-light border menteesplus-cohort-badge'
+                );
             }
             $cohorthtml = html_writer::div(implode('', $badges), 'menteesplus-cohort-list');
         } else {
-            $cohorthtml = html_writer::span(get_string('nocohort', 'block_menteesplus'), 'text-muted');
-        }
-
-        if ($user->suspended) {
-            $statushtml = html_writer::span(
-                get_string('statussuspended', 'block_menteesplus'),
-                'badge text-bg-secondary'
-            );
-        } else {
-            $statushtml = html_writer::span(
-                get_string('statusactive', 'block_menteesplus'),
-                'badge text-bg-success'
+            $cohorthtml = html_writer::span(
+                get_string('nocohort', 'block_menteesplus'),
+                'text-muted menteesplus-no-cohort'
             );
         }
 
         $actionlinks = [];
         if ($profileurl) {
-            $actionlinks[] = html_writer::link($profileurl, get_string('openprofile', 'block_menteesplus'), [
-                'class' => 'btn btn-sm btn-outline-primary',
-            ]);
+            $actionlinks[] = html_writer::link(
+                $profileurl,
+                get_string('openprofile', 'block_menteesplus'),
+                ['class' => 'btn btn-sm btn-outline-primary']
+            );
         }
-        $actionlinks[] = html_writer::link($messageurl, get_string('sendmessage', 'block_menteesplus'), [
-            'class' => 'btn btn-sm btn-outline-secondary',
-        ]);
+        $actionlinks[] = html_writer::link(
+            $messageurl,
+            get_string('sendmessage', 'block_menteesplus'),
+            ['class' => 'btn btn-sm btn-outline-secondary']
+        );
         $actions = html_writer::div(implode('', $actionlinks), 'menteesplus-actions');
 
-        echo html_writer::start_div('menteesplus-result-row', ['role' => 'row']);
+        echo html_writer::start_div('menteesplus-person-card', ['role' => 'listitem']);
 
-        echo html_writer::start_div('menteesplus-cell menteesplus-cell-student', ['role' => 'cell']);
-        echo html_writer::span(get_string('student', 'block_menteesplus'), 'menteesplus-mobile-label');
-        echo $studenthtml;
-        echo html_writer::end_div();
+        echo html_writer::div($studenthtml, 'menteesplus-person-main');
 
-        echo html_writer::start_div('menteesplus-cell menteesplus-cell-cohorts', ['role' => 'cell']);
-        echo html_writer::span(get_string('cohorts', 'block_menteesplus'), 'menteesplus-mobile-label');
+        echo html_writer::start_div('menteesplus-person-groups');
+        echo html_writer::div(get_string('cohorts', 'block_menteesplus'), 'menteesplus-section-label');
         echo $cohorthtml;
         echo html_writer::end_div();
 
-        echo html_writer::start_div('menteesplus-cell menteesplus-cell-status', ['role' => 'cell']);
-        echo html_writer::span(get_string('accountstatus', 'block_menteesplus'), 'menteesplus-mobile-label');
-        echo $statushtml;
-        echo html_writer::end_div();
-
-        echo html_writer::start_div('menteesplus-cell menteesplus-cell-actions', ['role' => 'cell']);
-        echo html_writer::span(get_string('actions', 'block_menteesplus'), 'menteesplus-mobile-label');
-        echo $actions;
-        echo html_writer::end_div();
+        echo html_writer::div($actions, 'menteesplus-person-actions');
 
         echo html_writer::end_div();
     }
@@ -279,7 +280,11 @@ if (!$users) {
         'status' => $status,
         'perpage' => $perpage,
     ]);
-    echo $OUTPUT->paging_bar($total, $page, $perpage, $pagingurl);
+    echo html_writer::div(
+        $OUTPUT->paging_bar($total, $page, $perpage, $pagingurl),
+        'menteesplus-pagination'
+    );
 }
 
+echo html_writer::end_div();
 echo $OUTPUT->footer();

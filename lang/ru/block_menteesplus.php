@@ -32,6 +32,7 @@ $string['blocklimit_desc'] = 'Максимальное количество по
     'отображаемых непосредственно в блоке на странице.';
 $string['cohortfilter'] = 'Глобальная группа';
 $string['cohorts'] = 'Глобальные группы';
+$string['emailshort'] = 'E-mail';
 $string['menteesplus:addinstance'] = 'Добавлять блок «Подопечные+»';
 $string['menteesplus:myaddinstance'] = 'Добавлять блок «Подопечные+» в личный кабинет';
 $string['nocohort'] = 'Без глобальной группы';
@@ -54,4 +55,5 @@ $string['statusall'] = 'Любой';
 $string['statusfilter'] = 'Статус';
 $string['statussuspended'] = 'Заблокирован';
 $string['student'] = 'Студент';
+$string['usernameshort'] = 'Логин';
 $string['viewall'] = 'Открыть всех ({$a})';
