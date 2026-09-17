@@ -8,16 +8,27 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Privacy provider for Mentees Plus.
  *
  * The plugin reads existing Moodle data and stores no personal data itself.
+ *
+ * @package   block_menteesplus
+ * @copyright 2026 MIA Academy
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+namespace block_menteesplus\privacy;
+
+use core_privacy\local\metadata\null_provider;
+
+/**
+ * Privacy provider implementing the null provider interface.
  *
  * @package   block_menteesplus
  * @copyright 2026 MIA Academy

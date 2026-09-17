@@ -8,14 +8,23 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Data access for mentees and cohort memberships.
+ *
+ * @package   block_menteesplus
+ * @copyright 2026 MIA Academy
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+namespace block_menteesplus\local;
+
+/**
+ * Repository for mentor assignments and cohort memberships.
  *
  * @package   block_menteesplus
  * @copyright 2026 MIA Academy
@@ -84,7 +93,7 @@ class mentee_repository {
                    AND cmfilter.cohortid = :cohortid
             )';
             $params['cohortid'] = $cohortid;
-        } elseif ($cohortid === -1) {
+        } else if ($cohortid === -1) {
             $where[] = 'NOT EXISTS (
                 SELECT 1
                   FROM {cohort_members} cmfilter
@@ -94,7 +103,7 @@ class mentee_repository {
 
         if ($status === 'active') {
             $where[] = 'u.suspended = 0';
-        } elseif ($status === 'suspended') {
+        } else if ($status === 'suspended') {
             $where[] = 'u.suspended = 1';
         }
 

@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Mentees Plus block.
@@ -25,6 +25,13 @@
 use block_menteesplus\local\mentee_repository;
 use core\user as core_user;
 
+/**
+ * Mentees Plus block implementation.
+ *
+ * @package   block_menteesplus
+ * @copyright 2026 MIA Academy
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class block_menteesplus extends block_base {
     /**
      * Initialise the block.
