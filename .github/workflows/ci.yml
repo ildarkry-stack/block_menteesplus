@@ -4,9 +4,13 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   ci:
     runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
@@ -22,9 +26,8 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_USER: moodle
-          POSTGRES_PASSWORD: moodle
-          POSTGRES_DB: moodle
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
         ports:
           - 5432:5432
         options: >-
@@ -33,17 +36,22 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+    env:
+      PLUGIN_PATH: ./plugin
+
     steps:
       - name: Checkout plugin
         uses: actions/checkout@v6
         with:
           path: plugin
+          persist-credentials: false
 
-      - name: Setup PHP
+      - name: Setup PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: pgsql, mbstring, intl, gd, curl, soap, zip
+          ini-values: max_input_vars=5000, opcache.enable_cli=1
           coverage: none
 
       - name: Initialise moodle-plugin-ci
@@ -52,25 +60,22 @@ jobs:
           echo "$(cd ci/bin; pwd)" >> "$GITHUB_PATH"
           echo "$(cd ci/vendor/bin; pwd)" >> "$GITHUB_PATH"
           sudo locale-gen en_AU.UTF-8
+          echo "NVM_DIR=$HOME/.nvm" >> "$GITHUB_ENV"
 
       - name: Install Moodle
-        run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+        run: moodle-plugin-ci install --plugin "$PLUGIN_PATH" --db-host=127.0.0.1
         env:
           DB: pgsql
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}
 
       - name: Validate
-        if: ${{ !cancelled() }}
-        run: moodle-plugin-ci validate
+        run: moodle-plugin-ci validate "$PLUGIN_PATH"
 
       - name: PHP lint
-        if: ${{ !cancelled() }}
-        run: moodle-plugin-ci phplint
+        run: moodle-plugin-ci phplint "$PLUGIN_PATH"
 
       - name: CodeSniffer
-        if: ${{ !cancelled() }}
-        run: moodle-plugin-ci phpcs --max-warnings 0
+        run: moodle-plugin-ci phpcs --max-warnings 0 "$PLUGIN_PATH"
 
       - name: PHPUnit
-        if: ${{ !cancelled() }}
-        run: moodle-plugin-ci phpunit --fail-on-warning
+        run: moodle-plugin-ci phpunit --moodle ./moodle --fail-on-warning "$PLUGIN_PATH"
