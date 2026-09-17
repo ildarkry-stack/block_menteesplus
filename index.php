@@ -73,7 +73,7 @@ $cohortsbyuser = $repository->get_cohorts_for_users(array_keys($users));
 
 echo $OUTPUT->header();
 
-echo html_writer::start_div('card mb-4');
+echo html_writer::start_div('card mb-4 menteesplus-filter-card');
 echo html_writer::start_div('card-body');
 echo html_writer::start_tag('form', [
     'method' => 'get',
@@ -143,47 +143,71 @@ echo html_writer::end_div();
 
 echo html_writer::div(
     get_string('resultcount', 'block_menteesplus', $total),
-    'mb-3 text-muted'
+    'mb-3 text-muted menteesplus-result-count'
 );
 
 if (!$users) {
     echo $OUTPUT->notification(get_string('nomatches', 'block_menteesplus'), 'info', false);
 } else {
-    echo html_writer::start_div('table-responsive');
-    $table = new html_table();
-    $table->attributes['class'] = 'table align-middle table-hover menteesplus-table';
-    $table->head = [
-        get_string('student', 'block_menteesplus'),
-        get_string('cohorts', 'block_menteesplus'),
-        get_string('accountstatus', 'block_menteesplus'),
-        get_string('actions', 'block_menteesplus'),
-    ];
+    echo html_writer::start_div('menteesplus-results', ['role' => 'table']);
+
+    echo html_writer::start_div('menteesplus-results-header', ['role' => 'row']);
+    echo html_writer::div(get_string('student', 'block_menteesplus'), 'menteesplus-cell menteesplus-cell-student', [
+        'role' => 'columnheader',
+    ]);
+    echo html_writer::div(get_string('cohorts', 'block_menteesplus'), 'menteesplus-cell menteesplus-cell-cohorts', [
+        'role' => 'columnheader',
+    ]);
+    echo html_writer::div(get_string('accountstatus', 'block_menteesplus'), 'menteesplus-cell menteesplus-cell-status', [
+        'role' => 'columnheader',
+    ]);
+    echo html_writer::div(get_string('actions', 'block_menteesplus'), 'menteesplus-cell menteesplus-cell-actions', [
+        'role' => 'columnheader',
+    ]);
+    echo html_writer::end_div();
 
     foreach ($users as $user) {
         $profileurl = \core\user::get_profile_url($user);
         $displayname = \core\user::get_fullname($user, $context);
         $messageurl = new moodle_url('/message/index.php', ['id' => $user->id]);
 
-        $picture = $OUTPUT->user_picture($user, [
-            'size' => 45,
-            'class' => 'rounded-circle menteesplus-avatar',
-            'alttext' => false,
-        ]);
-        if ($profileurl) {
-            $name = html_writer::link($profileurl, $displayname, ['class' => 'fw-semibold']);
+        if ((int) $user->picture > 0) {
+            $avatar = $OUTPUT->user_picture($user, [
+                'size' => 44,
+                'class' => 'rounded-circle menteesplus-avatar-image',
+                'alttext' => false,
+            ]);
         } else {
-            $name = html_writer::span($displayname, 'fw-semibold');
+            $initials = core_text::strtoupper(
+                core_text::substr($user->firstname, 0, 1) . core_text::substr($user->lastname, 0, 1)
+            );
+            $avatar = html_writer::span(s($initials), 'menteesplus-avatar-fallback', [
+                'aria-hidden' => 'true',
+            ]);
         }
+
+        if ($profileurl) {
+            $name = html_writer::link($profileurl, $displayname, ['class' => 'menteesplus-student-name']);
+        } else {
+            $name = html_writer::span($displayname, 'menteesplus-student-name');
+        }
+
         $identity = '';
         if ($canviewidentity) {
-            $identity = html_writer::div(
-                s($user->email) . ' · ' . s($user->username),
-                'small text-muted menteesplus-identity'
+            $email = html_writer::div(
+                html_writer::span(get_string('email') . ': ', 'menteesplus-identity-label') . s($user->email),
+                'menteesplus-identity-item'
             );
+            $username = html_writer::div(
+                html_writer::span(get_string('username') . ': ', 'menteesplus-identity-label') . s($user->username),
+                'menteesplus-identity-item'
+            );
+            $identity = html_writer::div($email . $username, 'menteesplus-identity');
         }
+
         $studenthtml = html_writer::div(
-            $picture . html_writer::div($name . $identity),
-            'd-flex align-items-center menteesplus-student'
+            $avatar . html_writer::div($name . $identity, 'menteesplus-student-main'),
+            'menteesplus-student'
         );
 
         $cohorthtml = '';
@@ -192,9 +216,9 @@ if (!$users) {
             $badges = [];
             foreach ($usercohorts as $cohort) {
                 $title = $cohort->idnumber ? $cohort->name . ' (' . $cohort->idnumber . ')' : $cohort->name;
-                $badges[] = html_writer::span(s($title), 'badge rounded-pill text-bg-light border me-1 mb-1');
+                $badges[] = html_writer::span(s($title), 'badge rounded-pill text-bg-light border menteesplus-cohort-badge');
             }
-            $cohorthtml = implode('', $badges);
+            $cohorthtml = html_writer::div(implode('', $badges), 'menteesplus-cohort-list');
         } else {
             $cohorthtml = html_writer::span(get_string('nocohort', 'block_menteesplus'), 'text-muted');
         }
@@ -211,25 +235,42 @@ if (!$users) {
             );
         }
 
-        $actions = '';
+        $actionlinks = [];
         if ($profileurl) {
-            $actions .= html_writer::link($profileurl, get_string('openprofile', 'block_menteesplus'), [
-                'class' => 'btn btn-sm btn-outline-primary me-1 mb-1',
+            $actionlinks[] = html_writer::link($profileurl, get_string('openprofile', 'block_menteesplus'), [
+                'class' => 'btn btn-sm btn-outline-primary',
             ]);
         }
-        $actions .= html_writer::link($messageurl, get_string('sendmessage', 'block_menteesplus'), [
-            'class' => 'btn btn-sm btn-outline-secondary mb-1',
+        $actionlinks[] = html_writer::link($messageurl, get_string('sendmessage', 'block_menteesplus'), [
+            'class' => 'btn btn-sm btn-outline-secondary',
         ]);
+        $actions = html_writer::div(implode('', $actionlinks), 'menteesplus-actions');
 
-        $table->data[] = [
-            $studenthtml,
-            $cohorthtml,
-            $statushtml,
-            $actions,
-        ];
+        echo html_writer::start_div('menteesplus-result-row', ['role' => 'row']);
+
+        echo html_writer::start_div('menteesplus-cell menteesplus-cell-student', ['role' => 'cell']);
+        echo html_writer::span(get_string('student', 'block_menteesplus'), 'menteesplus-mobile-label');
+        echo $studenthtml;
+        echo html_writer::end_div();
+
+        echo html_writer::start_div('menteesplus-cell menteesplus-cell-cohorts', ['role' => 'cell']);
+        echo html_writer::span(get_string('cohorts', 'block_menteesplus'), 'menteesplus-mobile-label');
+        echo $cohorthtml;
+        echo html_writer::end_div();
+
+        echo html_writer::start_div('menteesplus-cell menteesplus-cell-status', ['role' => 'cell']);
+        echo html_writer::span(get_string('accountstatus', 'block_menteesplus'), 'menteesplus-mobile-label');
+        echo $statushtml;
+        echo html_writer::end_div();
+
+        echo html_writer::start_div('menteesplus-cell menteesplus-cell-actions', ['role' => 'cell']);
+        echo html_writer::span(get_string('actions', 'block_menteesplus'), 'menteesplus-mobile-label');
+        echo $actions;
+        echo html_writer::end_div();
+
+        echo html_writer::end_div();
     }
 
-    echo html_writer::table($table);
     echo html_writer::end_div();
 
     $pagingurl = new moodle_url('/blocks/menteesplus/index.php', [

@@ -86,7 +86,20 @@ class block_menteesplus extends block_base {
         foreach ($users as $user) {
             $profileurl = core_user::get_profile_url($user);
             $displayname = core_user::get_fullname($user, $this->context);
-            $picture = $OUTPUT->user_picture($user, ['size' => 35, 'class' => 'rounded-circle']);
+            if ((int) $user->picture > 0) {
+                $picture = $OUTPUT->user_picture($user, [
+                    'size' => 35,
+                    'class' => 'rounded-circle menteesplus-block-avatar-image',
+                    'alttext' => false,
+                ]);
+            } else {
+                $initials = core_text::strtoupper(
+                    core_text::substr($user->firstname, 0, 1) . core_text::substr($user->lastname, 0, 1)
+                );
+                $picture = html_writer::span(s($initials), 'menteesplus-block-avatar-fallback', [
+                    'aria-hidden' => 'true',
+                ]);
+            }
             if ($profileurl) {
                 $name = html_writer::link($profileurl, $displayname, ['class' => 'fw-semibold']);
             } else {
