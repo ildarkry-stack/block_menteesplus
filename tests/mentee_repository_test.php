@@ -25,7 +25,6 @@ namespace block_menteesplus\local;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 
-#[CoversClass(mentee_repository::class)]
 /**
  * Tests for the mentee repository.
  *
@@ -34,6 +33,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @copyright  2026 MIA Academy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+#[CoversClass(mentee_repository::class)]
 final class mentee_repository_test extends \advanced_testcase {
     /**
      * Test mentee discovery, search, cohort filtering, and account status filtering.

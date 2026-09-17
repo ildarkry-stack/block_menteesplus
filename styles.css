@@ -1,3 +1,4 @@
+/* Compact block. */
 .block_menteesplus .menteesplus-item + .menteesplus-item {
     border-top: 1px solid var(--bs-border-color, #dee2e6);
 }
@@ -13,10 +14,115 @@
     vertical-align: middle;
 }
 
+/* Full-list filters. */
+.menteesplus-filters {
+    display: grid;
+    grid-template-columns: minmax(240px, 2fr) minmax(220px, 1.5fr) minmax(160px, 1fr) minmax(120px, .65fr);
+    gap: 1rem;
+    align-items: end;
+}
+
+.menteesplus-filter {
+    min-width: 0;
+}
+
+.menteesplus-filter .form-label {
+    display: block;
+    margin-bottom: .5rem;
+}
+
+.menteesplus-filter .form-control,
+.menteesplus-filter .form-select {
+    width: 100%;
+    min-width: 0;
+}
+
+.menteesplus-filter-perpage .form-select {
+    min-width: 105px;
+}
+
+.menteesplus-filter-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: .5rem;
+    min-width: 0;
+}
+
+.menteesplus-filter-actions .btn {
+    white-space: nowrap;
+}
+
+/* Full-list table. */
+.menteesplus-table {
+    margin-bottom: 0;
+}
+
+.menteesplus-table th,
 .menteesplus-table td {
-    min-width: 140px;
+    vertical-align: middle;
 }
 
 .menteesplus-table td:first-child {
-    min-width: 260px;
+    min-width: 270px;
+}
+
+.menteesplus-table th:nth-child(2),
+.menteesplus-table td:nth-child(2) {
+    min-width: 210px;
+}
+
+.menteesplus-table th:nth-child(3),
+.menteesplus-table td:nth-child(3) {
+    min-width: 165px;
+}
+
+.menteesplus-table th:nth-child(4),
+.menteesplus-table td:nth-child(4) {
+    min-width: 190px;
+    white-space: nowrap;
+}
+
+.menteesplus-student {
+    gap: .75rem;
+    min-width: 0;
+}
+
+.menteesplus-avatar {
+    flex: 0 0 auto;
+}
+
+.menteesplus-identity {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 991.98px) {
+    .menteesplus-filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .menteesplus-filter-search,
+    .menteesplus-filter-actions {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .menteesplus-filters {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .menteesplus-filter-search,
+    .menteesplus-filter-actions {
+        grid-column: auto;
+    }
+
+    .menteesplus-filter-actions {
+        justify-content: stretch;
+        flex-wrap: wrap;
+    }
+
+    .menteesplus-filter-actions .btn {
+        flex: 1 1 140px;
+    }
 }

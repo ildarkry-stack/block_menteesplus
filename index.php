@@ -78,10 +78,10 @@ echo html_writer::start_div('card-body');
 echo html_writer::start_tag('form', [
     'method' => 'get',
     'action' => (new moodle_url('/blocks/menteesplus/index.php'))->out(false),
-    'class' => 'row g-3 align-items-end',
+    'class' => 'menteesplus-filters',
 ]);
 
-echo html_writer::start_div('col-12 col-lg-4');
+echo html_writer::start_div('menteesplus-filter menteesplus-filter-search');
 echo html_writer::label(get_string('search', 'block_menteesplus'), 'id_q', true, ['class' => 'form-label']);
 echo html_writer::empty_tag('input', [
     'type' => 'search',
@@ -96,7 +96,7 @@ echo html_writer::empty_tag('input', [
 ]);
 echo html_writer::end_div();
 
-echo html_writer::start_div('col-12 col-md-5 col-lg-3');
+echo html_writer::start_div('menteesplus-filter menteesplus-filter-cohort');
 echo html_writer::label(get_string('cohortfilter', 'block_menteesplus'), 'id_cohortid', true, ['class' => 'form-label']);
 $cohortoptions = [
     0 => get_string('allcohorts', 'block_menteesplus'),
@@ -108,7 +108,7 @@ foreach ($cohorts as $cohort) {
 echo html_writer::select($cohortoptions, 'cohortid', $cohortid, false, ['id' => 'id_cohortid', 'class' => 'form-select']);
 echo html_writer::end_div();
 
-echo html_writer::start_div('col-12 col-md-4 col-lg-2');
+echo html_writer::start_div('menteesplus-filter menteesplus-filter-status');
 echo html_writer::label(get_string('statusfilter', 'block_menteesplus'), 'id_status', true, ['class' => 'form-label']);
 $statusoptions = [
     'all' => get_string('statusall', 'block_menteesplus'),
@@ -118,7 +118,7 @@ $statusoptions = [
 echo html_writer::select($statusoptions, 'status', $status, false, ['id' => 'id_status', 'class' => 'form-select']);
 echo html_writer::end_div();
 
-echo html_writer::start_div('col-6 col-md-3 col-lg-1');
+echo html_writer::start_div('menteesplus-filter menteesplus-filter-perpage');
 echo html_writer::label(get_string('perpage', 'block_menteesplus'), 'id_perpage', true, ['class' => 'form-label']);
 echo html_writer::select([25 => '25', 50 => '50', 100 => '100'], 'perpage', $perpage, false, [
     'id' => 'id_perpage',
@@ -126,10 +126,10 @@ echo html_writer::select([25 => '25', 50 => '50', 100 => '100'], 'perpage', $per
 ]);
 echo html_writer::end_div();
 
-echo html_writer::start_div('col-6 col-lg-2 d-flex gap-2');
+echo html_writer::start_div('menteesplus-filter-actions');
 echo html_writer::tag('button', get_string('applyfilters', 'block_menteesplus'), [
     'type' => 'submit',
-    'class' => 'btn btn-primary flex-grow-1',
+    'class' => 'btn btn-primary',
 ]);
 $reseturl = new moodle_url('/blocks/menteesplus/index.php');
 echo html_writer::link($reseturl, get_string('resetfilters', 'block_menteesplus'), [
@@ -164,7 +164,11 @@ if (!$users) {
         $displayname = \core\user::get_fullname($user, $context);
         $messageurl = new moodle_url('/message/index.php', ['id' => $user->id]);
 
-        $picture = $OUTPUT->user_picture($user, ['size' => 45, 'class' => 'rounded-circle me-2']);
+        $picture = $OUTPUT->user_picture($user, [
+            'size' => 45,
+            'class' => 'rounded-circle menteesplus-avatar',
+            'alttext' => false,
+        ]);
         if ($profileurl) {
             $name = html_writer::link($profileurl, $displayname, ['class' => 'fw-semibold']);
         } else {
@@ -172,11 +176,14 @@ if (!$users) {
         }
         $identity = '';
         if ($canviewidentity) {
-            $identity = html_writer::div(s($user->email) . ' · ' . s($user->username), 'small text-muted');
+            $identity = html_writer::div(
+                s($user->email) . ' · ' . s($user->username),
+                'small text-muted menteesplus-identity'
+            );
         }
         $studenthtml = html_writer::div(
             $picture . html_writer::div($name . $identity),
-            'd-flex align-items-center'
+            'd-flex align-items-center menteesplus-student'
         );
 
         $cohorthtml = '';
