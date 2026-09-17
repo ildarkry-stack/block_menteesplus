@@ -1,0 +1,22 @@
+.block_menteesplus .menteesplus-item + .menteesplus-item {
+    border-top: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+.block_menteesplus .min-w-0 {
+    min-width: 0;
+}
+
+.block_menteesplus .badge {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+.menteesplus-table td {
+    min-width: 140px;
+}
+
+.menteesplus-table td:first-child {
+    min-width: 260px;
+}
