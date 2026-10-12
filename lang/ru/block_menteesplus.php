@@ -28,8 +28,7 @@ $string['allcohorts'] = 'Все глобальные группы';
 $string['allmentees'] = 'Все подопечные';
 $string['applyfilters'] = 'Применить';
 $string['blocklimit'] = 'Количество пользователей в блоке';
-$string['blocklimit_desc'] = 'Максимальное количество подопечных, ' .
-    'отображаемых непосредственно в блоке на странице.';
+$string['blocklimit_desc'] = 'Максимальное количество подопечных, отображаемых в блоке.';
 $string['cohortfilter'] = 'Глобальная группа';
 $string['cohorts'] = 'Глобальные группы';
 $string['emailshort'] = 'E-mail';
@@ -41,14 +40,12 @@ $string['nomentees'] = 'За вами не закреплены подопечн
 $string['openprofile'] = 'Профиль';
 $string['perpage'] = 'На странице';
 $string['pluginname'] = 'Подопечные+';
-$string['privacy:metadata'] = 'Плагин «Подопечные+» не хранит персональные данные. ' .
-    'Он только отображает уже существующие в Moodle данные пользователей, ' .
-    'назначений ролей и членства в глобальных группах.';
+$string['privacy:metadata'] = 'Плагин не хранит персональные данные. Он показывает пользователей, назначения ролей и глобальные группы Moodle.';
 $string['resetfilters'] = 'Сбросить';
 $string['resultcount'] = 'Найдено: {$a}';
 $string['search'] = 'Поиск';
 $string['searchplaceholder'] = 'ФИО';
-$string['searchplaceholderidentity'] = 'ФИО, e-mail или логин';
+$string['searchplaceholderidentity'] = 'ФИО или разрешённые поля пользователя';
 $string['sendmessage'] = 'Написать';
 $string['statusactive'] = 'Активен';
 $string['statusall'] = 'Любой';

@@ -100,9 +100,24 @@ final class mentee_repository_test extends \advanced_testcase {
         $emailhidden = $repository->get_mentees($mentor->id, 'anna.alpha@example.test', 0, 'all', false, 0, 25);
         $this->assertSame(0, $emailhidden['total']);
 
+        // Requested identity fields must never bypass Moodle permissions or site settings.
+        set_config('showuseridentity', 'email');
+        $withoutpermission = $repository->get_mentees($mentor->id, 'anna.alpha@example.test', 0, 'all', true, 0, 25);
+        $this->assertSame(0, $withoutpermission['total']);
+
+        assign_capability('moodle/site:viewuseridentity', CAP_ALLOW, $roleid, \context_system::instance());
+        role_assign($roleid, $mentor->id, \context_system::instance()->id);
+
         $emailvisible = $repository->get_mentees($mentor->id, 'anna.alpha@example.test', 0, 'all', true, 0, 25);
         $this->assertSame(1, $emailvisible['total']);
         $this->assertArrayHasKey($studentone->id, $emailvisible['users']);
+
+        $usernamehidden = $repository->get_mentees($mentor->id, $studentone->username, 0, 'all', true, 0, 25);
+        $this->assertSame(0, $usernamehidden['total']);
+
+        set_config('showuseridentity', '');
+        $emaildisallowed = $repository->get_mentees($mentor->id, 'anna.alpha@example.test', 0, 'all', true, 0, 25);
+        $this->assertSame(0, $emaildisallowed['total']);
 
         $cohorts = $repository->get_cohorts_for_users([$studentone->id, $studenttwo->id]);
         $this->assertArrayHasKey($studentone->id, $cohorts);
