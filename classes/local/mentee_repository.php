@@ -38,7 +38,7 @@ class mentee_repository {
      * @param string $search Search string.
      * @param int $cohortid Cohort id, 0 for all, -1 for no cohort.
      * @param string $status all, active, or suspended.
-     * @param bool $includeidentity Include email and username in search.
+     * @param bool $includeidentity Include only identity fields permitted by Moodle.
      * @param int $offset Result offset.
      * @param int $limit Result limit.
      * @return array{users: array, total: int}
@@ -65,14 +65,20 @@ class mentee_repository {
             'u.id <> :mentoruser',
         ];
 
+        // Recheck permissions and configured identity fields in the repository, not only the UI.
+        $context = \context_system::instance();
+        $identityfields = [];
+        if ($includeidentity && has_capability('moodle/site:viewuseridentity', $context, $mentorid)) {
+            $identityfields = \core_user\fields::get_identity_fields($context, false);
+        }
+
         $search = trim($search);
         if ($search !== '') {
             $likeparts = [];
-            $searchfields = ['firstname', 'lastname', 'middlename', 'alternatename'];
-            if ($includeidentity) {
-                $searchfields[] = 'email';
-                $searchfields[] = 'username';
-            }
+            $searchfields = array_merge(
+                ['firstname', 'lastname', 'middlename', 'alternatename'],
+                $identityfields
+            );
             foreach ($searchfields as $field) {
                 $paramname = 'search_' . $field;
                 $likeparts[] = $DB->sql_like('u.' . $field, ':' . $paramname, false, false);
@@ -122,9 +128,12 @@ class mentee_repository {
                       WHERE {$wheresql}";
         $total = (int) $DB->count_records_sql($countsql, $params);
 
-        $fieldsql = 'u.id, u.username, u.email, u.firstname, u.lastname, u.firstnamephonetic,
+        $fieldsql = 'u.id, u.firstname, u.lastname, u.firstnamephonetic,
                      u.lastnamephonetic, u.middlename, u.alternatename, u.picture, u.imagealt,
                      u.suspended';
+        foreach ($identityfields as $field) {
+            $fieldsql .= ', u.' . $field;
+        }
 
         $sql = "SELECT DISTINCT {$fieldsql}
                   {$from}

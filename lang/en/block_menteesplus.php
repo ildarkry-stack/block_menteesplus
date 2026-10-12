@@ -40,13 +40,12 @@ $string['nomentees'] = 'No mentees are assigned to you.';
 $string['openprofile'] = 'Profile';
 $string['perpage'] = 'Per page';
 $string['pluginname'] = 'Mentees Plus';
-$string['privacy:metadata'] = 'Mentees Plus does not store personal data. It only displays existing Moodle user, ' .
-    'role assignment, and cohort membership data.';
+$string['privacy:metadata'] = 'Mentees Plus stores no personal data. It displays existing Moodle user, role and cohort membership data.';
 $string['resetfilters'] = 'Reset';
 $string['resultcount'] = 'Found: {$a}';
 $string['search'] = 'Search';
 $string['searchplaceholder'] = 'Name';
-$string['searchplaceholderidentity'] = 'Name, email or username';
+$string['searchplaceholderidentity'] = 'Name or permitted identity fields';
 $string['sendmessage'] = 'Message';
 $string['statusactive'] = 'Active';
 $string['statusall'] = 'Any';

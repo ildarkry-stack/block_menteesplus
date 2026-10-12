@@ -56,6 +56,7 @@ $PAGE->set_title(get_string('allmentees', 'block_menteesplus'));
 $PAGE->set_heading(get_string('allmentees', 'block_menteesplus'));
 
 $canviewidentity = has_capability('moodle/site:viewuseridentity', $context);
+$identityfields = \core_user\fields::get_identity_fields($context, false);
 $repository = new mentee_repository();
 $cohorts = $repository->get_available_cohorts($USER->id);
 $result = $repository->get_mentees(
@@ -92,7 +93,7 @@ echo html_writer::empty_tag('input', [
     'value' => $q,
     'class' => 'form-control',
     'placeholder' => get_string(
-        $canviewidentity ? 'searchplaceholderidentity' : 'searchplaceholder',
+        $identityfields ? 'searchplaceholderidentity' : 'searchplaceholder',
         'block_menteesplus'
     ),
 ]);
@@ -204,18 +205,18 @@ if (!$users) {
         }
 
         $identity = '';
-        if ($canviewidentity) {
-            $email = html_writer::span(
-                html_writer::span(get_string('emailshort', 'block_menteesplus') . ': ', 'menteesplus-identity-label') .
-                    s($user->email),
-                'menteesplus-identity-item'
-            );
-            $username = html_writer::span(
-                html_writer::span(get_string('usernameshort', 'block_menteesplus') . ': ', 'menteesplus-identity-label') .
-                    s($user->username),
-                'menteesplus-identity-item'
-            );
-            $identity = html_writer::div($email . $username, 'menteesplus-identity');
+        $identityitems = [];
+        foreach ($identityfields as $field) {
+            if (!empty($user->{$field})) {
+                $identityitems[] = html_writer::span(
+                    html_writer::span(\core_user\fields::get_display_name($field) . ': ', 'menteesplus-identity-label') .
+                        s($user->{$field}),
+                    'menteesplus-identity-item'
+                );
+            }
+        }
+        if ($identityitems) {
+            $identity = html_writer::div(implode('', $identityitems), 'menteesplus-identity');
         }
 
         $studentheader = html_writer::div($name . $statushtml, 'menteesplus-student-heading');
