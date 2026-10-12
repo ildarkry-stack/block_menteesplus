@@ -107,6 +107,8 @@ final class mentee_repository_test extends \advanced_testcase {
 
         assign_capability('moodle/site:viewuseridentity', CAP_ALLOW, $roleid, \context_system::instance());
         role_assign($roleid, $mentor->id, \context_system::instance()->id);
+        // Moodle user fields API checks the current user, not the repository's mentor id argument.
+        $this->setUser($mentor);
 
         $emailvisible = $repository->get_mentees($mentor->id, 'anna.alpha@example.test', 0, 'all', true, 0, 25);
         $this->assertSame(1, $emailvisible['total']);
