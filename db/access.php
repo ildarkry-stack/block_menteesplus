@@ -25,6 +25,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
+    'block/menteesplus:editfinalgrades' => [
+        'riskbitmask' => RISK_PERSONAL | RISK_DATALOSS,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_USER,
+        'archetypes' => [],
+    ],
     'block/menteesplus:myaddinstance' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,

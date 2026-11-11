@@ -257,6 +257,15 @@ if (!$users) {
             get_string('sendmessage', 'block_menteesplus'),
             ['class' => 'btn btn-sm btn-outline-secondary']
         );
+        // This list already comes from direct user-context role assignments.
+        // The grade editor independently rechecks the relationship and capability.
+        if (has_capability('block/menteesplus:editfinalgrades', context_user::instance($user->id))) {
+            $actionlinks[] = html_writer::link(
+                new moodle_url('/blocks/menteesplus/grades.php', ['userid' => $user->id]),
+                get_string('finalgrades', 'block_menteesplus'),
+                ['class' => 'btn btn-sm btn-outline-primary']
+            );
+        }
         $actions = html_writer::div(implode('', $actionlinks), 'menteesplus-actions');
 
         echo html_writer::start_div('menteesplus-person-card', ['role' => 'listitem']);

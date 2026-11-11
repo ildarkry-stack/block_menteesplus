@@ -382,3 +382,16 @@
         flex-basis: 44px;
     }
 }
+
+/* Mentor-only final course grade editor. */
+.menteesplus-grades-page .menteesplus-grades-table {
+    min-width: 670px;
+}
+
+.menteesplus-grades-page .menteesplus-grades-table form input[type="number"] {
+    max-width: 9rem;
+}
+
+.menteesplus-grades-page .menteesplus-grades-table form select {
+    max-width: 16rem;
+}
