@@ -56,7 +56,10 @@ final class final_grade_service_test extends \advanced_testcase {
         $generator->enrol_user($other->id, $othercourse->id);
         $roleid = create_role('Mentor grade editor', 'menteesplusgradeeditor', 'Mentor grade editor');
         assign_capability(
-            'block/menteesplus:editfinalgrades', CAP_ALLOW, $roleid, \context_system::instance()
+            'block/menteesplus:editfinalgrades',
+            CAP_ALLOW,
+            $roleid,
+            \context_system::instance()
         );
         role_assign($roleid, $mentor->id, \context_user::instance($student->id)->id);
         $this->setUser($mentor);
@@ -100,7 +103,9 @@ final class final_grade_service_test extends \advanced_testcase {
         role_assign($assignment->roleid, $mentor->id, \context_system::instance()->id);
         $service = new final_grade_service();
         $this->assertTrue(has_capability(
-            'block/menteesplus:editfinalgrades', \context_user::instance($other->id), $mentor->id
+            'block/menteesplus:editfinalgrades',
+            \context_user::instance($other->id),
+            $mentor->id
         ));
         $this->assertFalse($service->can_edit_student($mentor->id, $other->id));
     }
@@ -230,8 +235,12 @@ final class final_grade_service_test extends \advanced_testcase {
             'userid' => $mentor->id,
             'contextid' => \context_user::instance($student->id)->id,
         ], '*', MUST_EXIST);
-        assign_capability('block/menteesplus:editfinalgrades', CAP_PREVENT,
-            $assignment->roleid, \context_system::instance()->id);
+        assign_capability(
+            'block/menteesplus:editfinalgrades',
+            CAP_PREVENT,
+            $assignment->roleid,
+            \context_system::instance()->id
+        );
 
         $service = new final_grade_service();
         $this->assertFalse($service->can_edit_student($mentor->id, $student->id));
