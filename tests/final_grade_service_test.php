@@ -154,7 +154,7 @@ final class final_grade_service_test extends \advanced_testcase {
             static fn($event) => $event instanceof \block_menteesplus\event\final_grade_updated
         ));
         $this->assertCount(1, $events);
-        $this->assertSame($student->id, $events[0]->relateduserid);
+        $this->assertSame((int) $student->id, (int) $events[0]->relateduserid);
 
         $saved = $DB->get_record('grade_grades', ['itemid' => $item->id, 'userid' => $student->id], '*', MUST_EXIST);
         $this->assertEqualsWithDelta(87, $saved->finalgrade, 0.001);
@@ -239,7 +239,8 @@ final class final_grade_service_test extends \advanced_testcase {
             'block/menteesplus:editfinalgrades',
             CAP_PREVENT,
             $assignment->roleid,
-            \context_system::instance()->id
+            \context_system::instance()->id,
+            true
         );
         // Role changes inside one PHPUnit request require cache invalidation.
         accesslib_clear_all_caches_for_unit_testing();
