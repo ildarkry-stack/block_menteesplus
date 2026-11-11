@@ -99,7 +99,7 @@ jobs:
         run: moodle-plugin-ci phpcs --max-warnings 0 "$PLUGIN_PATH"
 
       - name: Upgrade savepoints
-        run: moodle-plugin-ci savepoints --moodle ./moodle "$PLUGIN_PATH"
+        run: moodle-plugin-ci savepoints "$PLUGIN_PATH"
 
       - name: PHPDoc
         run: moodle-plugin-ci phpdoc --moodle ./moodle --max-warnings 0 "$PLUGIN_PATH"
@@ -116,7 +116,6 @@ jobs:
         image: mysql:8.4
         env:
           MYSQL_ROOT_PASSWORD: moodle
-          MYSQL_DATABASE: moodle
         ports:
           - 3306:3306
         options: >-
