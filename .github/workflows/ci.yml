@@ -1,15 +1,19 @@
-name: Moodle Plugin CI
+name: Mentees Plus / Moodle CI
 
 on:
   push:
+    branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  test:
+  postgres:
+    name: Moodle ${{ matrix.moodle-branch }} / PHP ${{ matrix.php }} / PostgreSQL
     runs-on: ubuntu-24.04
+    timeout-minutes: 55
 
     strategy:
       fail-fast: false
@@ -17,10 +21,16 @@ jobs:
         include:
           - moodle-branch: MOODLE_500_STABLE
             php: '8.2'
+          - moodle-branch: MOODLE_500_STABLE
+            php: '8.4'
           - moodle-branch: MOODLE_501_STABLE
             php: '8.2'
+          - moodle-branch: MOODLE_501_STABLE
+            php: '8.4'
           - moodle-branch: MOODLE_502_STABLE
             php: '8.3'
+          - moodle-branch: MOODLE_502_STABLE
+            php: '8.4'
 
     services:
       postgres:
@@ -52,7 +62,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: pgsql, mbstring, intl, gd, curl, soap, zip
+          extensions: pgsql, mbstring, intl, gd, curl, soap, zip, sodium
           ini-values: max_input_vars=5000, opcache.enable_cli=1
           coverage: none
 
@@ -80,7 +90,7 @@ jobs:
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}
 
       - name: Validate
-        run: moodle-plugin-ci validate "$PLUGIN_PATH"
+        run: moodle-plugin-ci validate --moodle ./moodle "$PLUGIN_PATH"
 
       - name: PHP lint
         run: moodle-plugin-ci phplint "$PLUGIN_PATH"
@@ -88,5 +98,63 @@ jobs:
       - name: CodeSniffer
         run: moodle-plugin-ci phpcs --max-warnings 0 "$PLUGIN_PATH"
 
+      - name: Upgrade savepoints
+        run: moodle-plugin-ci savepoints "$PLUGIN_PATH"
+
+      - name: PHPDoc
+        run: moodle-plugin-ci phpdoc --moodle ./moodle --max-warnings 0 "$PLUGIN_PATH"
+
+      - name: PHPUnit
+        run: moodle-plugin-ci phpunit --moodle ./moodle --fail-on-warning "$PLUGIN_PATH"
+
+  mysql:
+    name: Moodle 5.2 / PHP 8.3 / MySQL 8.4
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: moodle
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 -uroot -pmoodle"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PLUGIN_PATH: ./plugin
+      DB: mysqli
+      MOODLE_BRANCH: MOODLE_502_STABLE
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+        with:
+          path: plugin
+          persist-credentials: false
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mysqli, mbstring, intl, gd, curl, soap, zip, sodium
+          ini-values: max_input_vars=5000, opcache.enable_cli=1
+          coverage: none
+      - name: Initialise moodle-plugin-ci
+        run: |
+          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
+          echo "$(cd ci/bin; pwd)" >> "$GITHUB_PATH"
+          echo "$(cd ci/vendor/bin; pwd)" >> "$GITHUB_PATH"
+          sudo locale-gen en_AU.UTF-8
+          echo "NVM_DIR=$HOME/.nvm" >> "$GITHUB_ENV"
+      - name: Clean-install Moodle and plugin
+        run: >-
+          moodle-plugin-ci install
+          --plugin "$PLUGIN_PATH"
+          --db-type=mysqli
+          --db-user=root
+          --db-pass=moodle
+          --db-name=moodle
+          --db-host=127.0.0.1
       - name: PHPUnit
         run: moodle-plugin-ci phpunit --moodle ./moodle --fail-on-warning "$PLUGIN_PATH"
