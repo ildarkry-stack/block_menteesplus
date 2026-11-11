@@ -241,6 +241,9 @@ final class final_grade_service_test extends \advanced_testcase {
             $assignment->roleid,
             \context_system::instance()->id
         );
+        // Role changes inside one PHPUnit request require cache invalidation.
+        accesslib_clear_all_caches_for_unit_testing();
+        $this->setUser($mentor);
 
         $service = new final_grade_service();
         $this->assertFalse($service->can_edit_student($mentor->id, $student->id));
