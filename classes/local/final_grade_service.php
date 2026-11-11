@@ -115,7 +115,6 @@ class final_grade_service {
              LEFT JOIN {grade_grades} gg ON gg.itemid = gi.id AND gg.userid = :studentid
                  WHERE gi.courseid {$insql}
                    AND gi.itemtype = :itemtype
-                   AND gi.deleted = 0
               ORDER BY gi.courseid ASC, gi.id ASC";
         $records = $DB->get_records_sql($sql, $params);
         $result = [];
