@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'block_menteesplus';
-$plugin->version = 2026101200;
+$plugin->version = 2026111101;
 $plugin->requires = 2025041400; // Moodle 5.0.
 $plugin->supported = [500, 502];
 $plugin->maturity = MATURITY_BETA;
-$plugin->release = '0.1.5';
+$plugin->release = '0.2.0-beta2';
